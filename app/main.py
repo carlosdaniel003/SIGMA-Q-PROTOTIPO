@@ -46,20 +46,21 @@ if os.path.exists(modelo_path) and os.path.exists(vetorizador_path):
     modelo = joblib.load(modelo_path)
     vetorizador = joblib.load(vetorizador_path)
     st.sidebar.success("✅ Modelo carregado com sucesso!")
-else:
-    st.sidebar.error("❌ Modelo não encontrado! Execute o treino primeiro.")
-    st.stop()
+    
+    if "DESCRIÇÃO DA FALHA" in df.columns:
+        descricoes = df["DESCRIÇÃO DA FALHA"].astype(str)
+        X_tfidf = vetorizador.transform(descricoes)
+        predicoes = modelo.predict(X_tfidf)
+        df["CATEGORIA_PREDITA"] = predicoes
 
-if "DESCRIÇÃO DA FALHA" in df.columns:
-    descricoes = df["DESCRIÇÃO DA FALHA"].astype(str)
-    X_tfidf = vetorizador.transform(descricoes)
-    predicoes = modelo.predict(X_tfidf)
-    df["CATEGORIA_PREDITA"] = predicoes
-    st.success("✅ Classificação concluída!")
-    st.dataframe(df[["DESCRIÇÃO DA FALHA", "CATEGORIA_PREDITA"]], use_container_width=True)
+        st.success("✅ Classificação concluída!")
+        st.dataframe(df[["DESCRIÇÃO DA FALHA", "CATEGORIA_PREDITA"]], use_container_width=True)
+    else:
+        st.warning("⚠️ A coluna 'DESCRIÇÃO DA FALHA' não foi encontrada no arquivo.")
 else:
-    st.warning("⚠️ A coluna 'DESCRIÇÃO DA FALHA' não foi encontrada no arquivo.")
-
+    st.sidebar.warning("⚠️ Modelo de IA ainda não disponível.")
+    st.info("O sistema funcionará apenas para visualização de dados até o modelo ser treinado.")
+    st.dataframe(df, use_container_width=True)
 
 # =========================
 # CLASSIFICAÇÃO AUTOMÁTICA
