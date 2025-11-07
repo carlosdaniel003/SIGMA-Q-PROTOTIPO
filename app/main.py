@@ -22,7 +22,8 @@ if ROOT_DIR not in sys.path:
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Importações internas do SIGMA-Q
-from utils.atualizador import carregar_base, monitorar_base
+from utils.atualizador_temp import carregar_base, monitorar_base
+
 from utils.logger import registrar_classificacoes
 from utils.model_manager import carregar_modelos, verificar_modelos
 
@@ -30,7 +31,7 @@ from utils.model_manager import carregar_modelos, verificar_modelos
 # Adiciona a pasta raiz ao caminho do Python
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.atualizador import carregar_base, monitorar_base
+from utils.atualizador_temp import carregar_base, monitorar_base
 from utils.logger import registrar_classificacoes
 from utils.auto_updater import verificar_atualizacao
 
