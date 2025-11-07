@@ -166,7 +166,8 @@ col2.metric("Categorias distintas", df["CATEGORIA"].nunique() if "CATEGORIA" in 
 col3.metric("Motivos distintos", df["MOTIVO"].nunique() if "MOTIVO" in df.columns else "N/A")
 
 # Verificação automática (em segundo plano)
-if monitorar_base(intervalo=15):
+atualizado, _ = monitorar_base(intervalo=15)
+if atualizado:
     st.rerun()
 
 from utils.text_processor import preprocessar_dataframe
