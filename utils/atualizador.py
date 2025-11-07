@@ -1,48 +1,39 @@
-# utils/atualizador.py
-import pandas as pd
 import os
+import pandas as pd
 import streamlit as st
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-DEFAULT_PATH = os.path.join(BASE_DIR, "data", "quality_control_outubro.xlsx")
 
 def carregar_base(path: str = None, usecols: list | None = None) -> pd.DataFrame:
     """
-    Carrega a base de dados oficial (oculta) de forma segura.
-    Mostra mensagens amigáveis caso o arquivo não exista no ambiente.
+    Carrega a base oficial de dados de forma segura.
+    Detecta ambiente local ou Streamlit Cloud automaticamente.
     """
 
-    caminho = path or DEFAULT_PATH
-    st.write(f"📂 Caminho de busca da base: `{caminho}`")
+    # Caminhos possíveis
+    local_path = os.path.join("data", "quality_control_outubro.xlsx")
+    cloud_path = os.path.join("/mount/src/sigma-q-prototipo/data", "quality_control_outubro.xlsx")
 
-    # Se o arquivo não existir, tenta exibir aviso e seguir sem travar
-    if not os.path.exists(caminho):
-        st.warning("⚠️ A base de dados oficial não foi encontrada no ambiente atual.")
-        st.info("""
-        Possíveis causas:
-        - O arquivo `quality_control_outubro.xlsx` não foi incluído no repositório GitHub.
-        - A pasta `data/` está vazia no Streamlit Cloud.
-        - O caminho padrão não foi atualizado.
-        """)
+    # Escolhe o que existir
+    if os.path.exists(local_path):
+        caminho = local_path
+    elif os.path.exists(cloud_path):
+        caminho = cloud_path
+    else:
+        st.error("❌ Base de dados não encontrada em nenhum caminho esperado.")
+        st.info("Verifique se o arquivo está incluído no GitHub ou se o nome está correto.")
         st.stop()
 
-    try:
-        df = pd.read_excel(caminho, usecols=usecols)
-        df.columns = (
-            df.columns.str.strip()
-            .str.upper()
-            .str.normalize("NFKD")
-            .str.encode("ascii", errors="ignore")
-            .str.decode("ascii")
-            .str.replace(" ", "_")
-        )
+    st.write(f"📂 Usando base em: `{caminho}`")
 
-        # Remove linhas totalmente vazias
-        df = df.dropna(how="all").reset_index(drop=True)
-
-        st.success(f"✅ Base carregada com sucesso: {len(df)} registros, {len(df.columns)} colunas.")
-        return df
-
-    except Exception as e:
-        st.error(f"❌ Erro ao ler a planilha: {e}")
-        st.stop()
+    # Carrega planilha
+    df = pd.read_excel(caminho, usecols=usecols)
+    df.columns = (
+        df.columns.str.strip()
+        .str.upper()
+        .str.normalize("NFKD")
+        .str.encode("ascii", errors="ignore")
+        .str.decode("ascii")
+        .str.replace(" ", "_")
+    )
+    df = df.dropna(how="all").reset_index(drop=True)
+    st.success(f"✅ Base carregada com sucesso: {len(df)} registros, {len(df.columns)} colunas.")
+    return df
