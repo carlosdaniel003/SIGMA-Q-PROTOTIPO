@@ -11,11 +11,15 @@ import sys, os
 # Identificação da build atual
 st.caption("🚀 Build SIGMA-Q 2025-11-07-Rev3")
 
+# --- Corrige caminho para pacotes locais (garante que /utils seja visível mesmo em Cloud) ---
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
+
 # Garante que o diretório raiz do projeto (pai de /app) esteja no sys.path
 # Isso permite importar os módulos de /utils/ corretamente no Streamlit Cloud
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-st.write("📁 Conteúdo do diretório raiz:", os.listdir(os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))))
-
 
 # Importações internas do SIGMA-Q
 from utils.atualizador import carregar_base, monitorar_base
