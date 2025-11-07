@@ -14,6 +14,8 @@ st.caption("🚀 Build SIGMA-Q 2025-11-07-Rev3")
 # Garante que o diretório raiz do projeto (pai de /app) esteja no sys.path
 # Isso permite importar os módulos de /utils/ corretamente no Streamlit Cloud
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+st.write("📁 Conteúdo do diretório raiz:", os.listdir(os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))))
+
 
 # Importações internas do SIGMA-Q
 from utils.atualizador import carregar_base, monitorar_base
