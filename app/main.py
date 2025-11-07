@@ -1,4 +1,5 @@
 import streamlit as st
+st.caption("🚀 Build SIGMA-Q 2025-11-07-Rev3")
 import pandas as pd
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
