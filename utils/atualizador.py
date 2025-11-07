@@ -54,3 +54,22 @@ def carregar_base(path: str = None, usecols: list | None = None) -> pd.DataFrame
     df = df.dropna(how="all").reset_index(drop=True)
     st.success(f"✅ Base carregada com sucesso: {len(df)} registros, {len(df.columns)} colunas.")
     return df
+
+# =========================
+# Função auxiliar de monitoramento da base
+# =========================
+def monitorar_base(intervalo: int = 30, path: str = None, last_mtime: float | None = None) -> tuple[bool, float]:
+    """
+    Verifica se o arquivo da base foi modificado.
+    Retorna uma tupla (modificado: bool, timestamp_atual: float).
+    """
+    caminho = path or DEFAULT_PATH
+    try:
+        mtime = os.path.getmtime(caminho)
+    except Exception:
+        return False, None
+
+    if last_mtime is None:
+        return False, mtime
+
+    return (mtime != last_mtime), mtime
